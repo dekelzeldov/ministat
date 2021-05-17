@@ -127,8 +127,6 @@ public:
             }
         }
 
-        if (m_solver.modelValue(1) == Minisat::l_True) { int x=1; x++; }
-
         // Add your code here
     }
 
