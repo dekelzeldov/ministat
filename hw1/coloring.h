@@ -77,6 +77,23 @@ public:
         assert (node < m_graph.getNumberOfNodes());
 
         // Add your code here
+
+        // node has a color: or(for_color_c( var (node, c) ))
+        Minisat::vec<Minisat::Lit> clause;
+        for (int c=0; c < m_nNumberOfColors; c++) {
+            Minisat::Var v = getNodeHasColorVar(node, c); // = node n has the color c;
+            clause.push(Minisat::mkLit(v, false));
+        }
+        m_solver.addClause(clause);
+
+        // node doesn't have more than one color: for_color_c(for_color_k_not_c( or(not(var(node, c)), not(var(node,k))))
+        for (int c=0; c < m_nNumberOfColors-1; c++) {
+            for (int k = c + 1; k < m_nNumberOfColors; k++) {
+                Minisat::Lit node_is_not_c = Minisat::mkLit(getNodeHasColorVar(node, c), true)
+                Minisat::Lit node_is_not_k = Minisat::mkLit(getNodeHasColorVar(node, k), true)
+                m_solver.addClause(node_is_not_c, node_is_not_k);
+            }
+        }
     }
 
     void addEdgeColoringConstraints(int n1, int n2) {
@@ -86,6 +103,12 @@ public:
 
         // Add your code here
 
+        //nodes n1 n2 have different colors: for_color_c(or(not(var(n1, c)), not(var(n2,c))))
+        for (int c=0; c < m_nNumberOfColors-1; c++) {
+            Minisat::Lit n1_is_not_c = Minisat::mkLit(getNodeHasColorVar(n1, c), true)
+            Minisat::Lit n2_is_not_c = Minisat::mkLit(getNodeHasColorVar(n2, c), true)
+            m_solver.addClause(n1_is_not_c, n2_is_not_c);
+        }
     }
 
     bool isColorable()
@@ -108,6 +131,7 @@ public:
 
         return bResult;
     }
+
 
     // The function gets allColoring by reference and returns
     // all k-coloring in this vector. Note that the inner vector

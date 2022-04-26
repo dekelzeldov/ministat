@@ -52,6 +52,7 @@ target_link_libraries(minisat-lib-static ${ZLIB_LIBRARY})
 
 add_executable(minisat_core minisat/core/Main.cc)
 add_executable(minisat_simp minisat/simp/Main.cc)
+add_executable(main hw1/main.cc)
 
 if(STATIC_BINARIES)
   target_link_libraries(minisat_core minisat-lib-static)
